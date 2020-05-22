@@ -23,8 +23,8 @@ class weight_bias(object):
     """Using for forget gate, input gate, input modulation gate and output gate\n
     to not waste variables and make things easier"""
     def __init__(self, input_size, hidden_size):
-        self.xh = build_weight(hidden_size, input_size)
-        self.hh = build_weight(hidden_size, hidden_size)
+        self.xh = build_weight(hidden_size, input_size) / 1000
+        self.hh = build_weight(hidden_size, hidden_size) / 1000
         self.bh = np.zeros((hidden_size, 1))
     
     def process(self, x, h, f):
@@ -105,9 +105,9 @@ class LSTM:
     
     def test(self, x: np.ndarray, return_argmax=True):
         """return softmax of the forward result\n
-        x: 1d array or 2d array of samples\n
+        x: 2d array or 3d array of samples\n
         return_argmax: return as a class or not"""
-        if len(x.shape) == 1:
+        if len(x.shape) == 2:
             x.reshape(x.shape + tuple(1))
         out = self.forward(x)
         out = self.softmax(out)
