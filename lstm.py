@@ -182,7 +182,7 @@ class LSTM:
             dForget += (dL_dWx, dL_dWh, dL_dbh)
 
             # change dL/dh
-            dL_dh = newdL_dh
+            dL_dh = newdL_dh / learning_rate
             
             # change dL/dc
             # dL/dc * dc/dc-1 = dL/dc-1

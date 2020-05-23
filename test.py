@@ -2,13 +2,13 @@ import numpy as np
 
 from lstm import LSTM
 
-data = open("name copy", 'r').read()
+data = open("japanesenameexample", 'r').read()
 unique = list(set(data))
 def onehot(char, set_of_char):
     one_huh = [[0]] * len(set_of_char)
     one_huh[set_of_char.index(char)] = [1]
     return one_huh
-
+    
 def oneheat(char):
     return np.array(onehot(char, unique))
 
@@ -23,7 +23,7 @@ for epoch in range(100):
         loss += lstm.backpropagation(X, Y, learning_rate=0.02)
         _ += 1
     print("Epoch / Iteration: {} || Loss: {} / char".format(epoch + 1, loss[0] / _))
-    if(loss[0] / _ < 0.5):
+    if(loss[0] / _ < 1):
         break
 
 # test data
