@@ -144,15 +144,17 @@ class LSTM:
         dForget = dW_dB(self.forget.xh.shape, self.forget.hh.shape, self.forget.bh.shape)
         
         # finding derivative stuff
+        dL_dc = np.zeros(self.cells[len(self.cells) - 1].shape)
         for i in reversed(range(len(self.hidden) - 1)):
             # cell
-            dL_dc = dL_dh * self.output_data[i] * self.dtanh_dx(self.tanh(self.cells[i + 1]))
-
+            dL_dc += dL_dh * self.output_data[i] * self.dtanh_dx(self.tanh(self.cells[i + 1]))
+            newdL_dh = np.zeros(dL_dh.shape)
             # output
             temp = learning_rate * dL_dh * self.tanh(self.cells[i + 1]) * self.dsigmoid_dx(self.output_data[i])
             dL_dWx = temp @ self.last_input[i].T
             dL_dWh = temp @ self.hidden[i].T 
             dL_dbh = temp
+            newdL_dh += self.output.hh @ temp
             doutput += (dL_dWx, dL_dWh, dL_dbh)
 
             # input modulation
@@ -160,6 +162,7 @@ class LSTM:
             dL_dWx = temp @ self.last_input[i].T
             dL_dWh = temp @ self.hidden[i].T
             dL_dbh = temp
+            newdL_dh += self.inputmodulation.hh @ temp
             dinputmod += (dL_dWx, dL_dWh, dL_dbh)
 
             # input
@@ -167,6 +170,7 @@ class LSTM:
             dL_dWx = temp @ self.last_input[i].T
             dL_dWh = temp @ self.hidden[i].T
             dL_dbh = temp
+            newdL_dh += self.input.hh @ temp
             dinput += (dL_dWx, dL_dWh, dL_dbh)
 
             # forget
@@ -174,8 +178,12 @@ class LSTM:
             dL_dWx = temp @ self.last_input[i].T
             dL_dWh = temp @ self.hidden[i].T
             dL_dbh = temp
+            newdL_dh += self.forget.hh @ temp
             dForget += (dL_dWx, dL_dWh, dL_dbh)
 
+            # change dL/dh
+            dL_dh = newdL_dh
+            
             # change dL/dc
             # dL/dc * dc/dc-1 = dL/dc-1
             dL_dc *= self.forget_data[i]
