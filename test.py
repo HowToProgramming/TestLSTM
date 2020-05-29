@@ -14,7 +14,7 @@ def oneheat(char):
 
 data = list(map(oneheat, data))
 lstm = LSTM(len(unique), len(unique), 128)
-for epoch in range(100):
+for epoch in range(1000):
     loss = 0
     _ = 0
     for i in range(len(data) - 1):
@@ -23,7 +23,7 @@ for epoch in range(100):
         loss += lstm.backpropagation(X, Y, learning_rate=0.02)
         _ += 1
     print("Epoch / Iteration: {} || Loss: {} / char".format(epoch + 1, loss[0] / _))
-    if(loss[0] / _ < 1):
+    if loss / _ < 0.1:
         break
 
 # test data
