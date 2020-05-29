@@ -193,8 +193,8 @@ class LSTM:
         self.input -= dinput
         self.inputmodulation -= dinputmod
         self.output -= doutput
-        self.why -= d_Why
-        self.by -= d_by
+        self.why -= learning_rate * d_Why
+        self.by -= learning_rate * d_by
 
         # return loss
         return loss
