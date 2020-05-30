@@ -80,7 +80,7 @@ class LSTM:
         self.input_mod_data = dict()
         self.input_data = dict()
         self.output_data = dict()
-        self.last_input = inp
+        self.last_input = inp.copy()
 
         # forward
         for idx in range(len(inp)):
@@ -88,14 +88,14 @@ class LSTM:
             input_gate = self.input.process(inp[idx], self.hidden[idx], self.sigmoid)
             input_mod = self.inputmodulation.process(inp[idx], self.hidden[idx], self.tanh)
             next_cell = forget_gate * self.cells[idx] + input_gate * input_mod
-            self.cells[idx + 1] = next_cell
+            self.cells[idx + 1] = next_cell.copy()
             out = self.output.process(inp[idx], self.hidden[idx], self.sigmoid)
             next_hidden = out * self.tanh(next_cell)
-            self.hidden[idx + 1] = next_hidden
-            self.forget_data[idx] = forget_gate
-            self.input_data[idx] = input_gate
-            self.input_mod_data[idx] = input_mod
-            self.output_data[idx] = out
+            self.hidden[idx + 1] = next_hidden.copy()
+            self.forget_data[idx] = forget_gate.copy()
+            self.input_data[idx] = input_gate.copy()
+            self.input_mod_data[idx] = input_mod.copy()
+            self.output_data[idx] = out.copy()
         real_output = self.why @ next_hidden + self.by
         return real_output
     
